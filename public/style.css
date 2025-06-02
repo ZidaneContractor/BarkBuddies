@@ -1,0 +1,507 @@
+body{
+    background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
+}
+img{
+    margin-top: 5%;
+    border-radius: 50%;
+    border: 5px solid #f19d30;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+  li{
+    float:right;
+}
+li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  li a:hover:not(.active)  {
+    background-color: #555555;
+}
+.active {
+    background-color: #f19d30;
+  }
+/* dumping all style tags into this*/
+body {
+  background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
+  font-family: sans-serif;
+  margin: 0;
+  padding-top: 60px; /* Adjust for fixed navigation bar */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+nav {
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100; /* Ensure it stays on top */
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex; /* Arrange list items horizontally */
+  justify-content: flex-end; /* Push items to the right */
+}
+
+nav li {
+  float: none; /* Override default float */
+}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+nav li a:hover:not(.active) {
+  background-color: #555555;
+}
+
+nav li a.active {
+  background-color: #f19d30;
+}
+
+header {
+  margin-top: 5%;
+}
+
+.logo-container {
+  margin-bottom: 20px;
+}
+
+.logo {
+  border-radius: 50%;
+  border: 5px solid #f19d30;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+h1 {
+  color: #333;
+  font-size: 2.5em;
+  margin-bottom: 10px;
+}
+
+.tagline {
+  color: #555;
+  font-size: 1.2em;
+  margin-bottom: 20px;
+}
+
+.cta-button {
+  display: inline-block;
+  padding: 15px 30px;
+  background-color: #f19d30;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.cta-button:hover {
+  background-color: #e08e2b;
+}
+
+
+body {
+  background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
+  font-family: sans-serif;
+  margin: 0;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+nav {
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav li {
+  float: none;
+}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+nav li a:hover:not(.active) {
+  background-color: #555555;
+}
+
+nav li a.active {
+  background-color: #f19d30;
+}
+
+main {
+  width: 80%;
+  max-width: 700px;
+  padding: 30px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+h2 {
+  color: #f19d30;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.contact-info {
+  margin-bottom: 25px;
+}
+
+.contact-info h3 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.contact-details p {
+  color: #555;
+  line-height: 1.6;
+  margin-bottom: 8px;
+}
+
+.contact-details p strong {
+  font-weight: bold;
+  color: #333;
+}
+
+.contact-form {
+  margin-top: 30px;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+}
+
+.contact-form h3 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1em;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.submit-button {
+  background-color: #f19d30;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #e08e2b;
+}
+
+
+body {
+  background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
+  font-family: sans-serif;
+  margin: 0;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+nav {
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav li {
+  float: none;
+}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+nav li a:hover:not(.active) {
+  background-color: #555555;
+}
+
+nav li a.active {
+  background-color: #f19d30;
+}
+
+main {
+  width: 80%;
+  max-width: 600px;
+  padding: 30px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+h2 {
+  color: #f19d30;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="datetime-local"],
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-size: 1em;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.submit-button {
+  background-color: #f19d30;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #e08e2b;
+}
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+  font-size: 0.9em;
+  word-break: break-word; /* To prevent long strings from overflowing */
+}
+th {
+  background-color: #f19d30;
+  color: white;
+  cursor: pointer; /* Indicate sortable columns (if we add that later) */
+}
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+tr:hover {
+  background-color: #f1f1f1;
+}
+.dashboard-section {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  text-align: left;
+}
+.dashboard-section h3 {
+  color: #333;
+  text-align: center;
+  margin-bottom: 25px;
+}
+
+
+body {
+  background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
+  font-family: sans-serif;
+  margin: 0;
+  padding-top: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+nav {
+  background-color: #333;
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 100;
+}
+
+nav ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  justify-content: flex-end;
+}
+
+nav li {
+  float: none;
+}
+
+nav li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+nav li a:hover:not(.active) {
+  background-color: #555555;
+}
+
+nav li a.active {
+  background-color: #f19d30;
+}
+
+main {
+  width: 80%;
+  max-width: 960px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-top: 30px;
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+h2 {
+  color: #f19d30;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.owner {
+  border-bottom: 1px solid #eee;
+  padding-bottom: 15px;
+  margin-bottom: 15px;
+}
+
+.owner:last-child {
+  border-bottom: none;
+}
+
+.owner h3 {
+  color: #333;
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+.owner p {
+  color: #555;
+  line-height: 1.6;
+}

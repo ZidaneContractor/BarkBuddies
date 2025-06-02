@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* You can include basic styling here or link to your main CSS file */
+      
+    </style>
+    <title>Book a Sitter - Bark Buddies</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="logologo.jpeg" type="image/jpeg">
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="HomePage.html">Home</a></li>
+            <li><a href="aboutus.html">About Us</a></li>
+            <li><a href="contactus.html">Contact Us</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <h2>Book Your Dog Sitter Today!</h2>
+        <form action="/submit_booking" method="POST">
+            <div class="form-group">
+                <label for="name">Your Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Your Email:</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            <div class="form-group">
+                <label for="dog_breed">Dog Breed:</label>
+                <select id="dog_breed" name="dog_breed">
+                    <optgroup label="Small">
+                        <option value="Chihuahua">Chihuahua</option>
+                        <option value="Pomeranian">Pomeranian</option>
+                        <option value="Pug">Pug</option>
+                        <option value="Shih Tzu">Shih Tzu</option>
+                    </optgroup>
+                    <optgroup label="Medium">
+                        <option value="Golden Retriever">Golden Retriever</option>
+                         <option value="German Shepherd">German Shepherd</option>
+                    </optgroup>
+                    <optgroup label="Large">
+                        <option value="Doberman">Doberman</option>
+                        <option value="Great Dane">Great Dane</option>
+                        <option value="Saint Bernard">Saint Bernard</option>
+                    </optgroup>
+                </select>
+            </div>            
+            <div class="form-group">
+                <label for="dog_gender">Dog Gender:</label>
+                <select id="dog_gender" name="dog_gender">
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="unknown">Unknown</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="num_dogs">Number of Dogs:</label>
+                <input type="number" id="num_dogs" name="num_dogs">
+            </div>
+            <div class="form-group">
+                <label for="start_datetime">Start Date and Time:</label>
+                <input type="datetime-local" id="start_datetime" name="start_datetime" required>
+            </div>
+            <div class="form-group">
+                <label for="end_datetime">End Date and Time:</label>
+                <input type="datetime-local" id="end_datetime" name="end_datetime" required>
+            </div>
+            <div class="form-group">
+                <label for="location">Location/Address:</label>
+                <input type="text" id="location" name="location" required>
+            </div>
+            <div class="form-group">
+                <label for="notes">Special Instructions/Notes:</label>
+                <textarea id="notes" name="notes" rows="5"></textarea>
+            </div>
+            <button type="submit" class="submit-button">Submit Booking Request</button>
+        </form>
+    </main>
+</body>
+</html>
