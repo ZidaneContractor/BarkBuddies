@@ -114,7 +114,6 @@ res.send(`
         <h2>Booking Request Received!</h2>
         <p>Thank you, <strong>${name}</strong>, for your booking request. We will contact you soon at <strong>${email}</strong>.</p>
         <p>Your dog sitting is scheduled from <strong>${start_datetime}</strong> to <strong>${end_datetime}</strong>.</p>
-        <p>Details have been recorded. You can view them in the backend database.</p>
         <a href="/" class="back-button">Back to Homepage</a>
     </div>
 </body>
