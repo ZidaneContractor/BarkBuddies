@@ -1,38 +1,4 @@
-body{
-    background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
-}
-img{
-    margin-top: 5%;
-    border-radius: 50%;
-    border: 5px solid #f19d30;
-}
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-    position: fixed;
-    top: 0;
-    width: 100%;
-  }
-  li{
-    float:right;
-}
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-  }
-  li a:hover:not(.active)  {
-    background-color: #555555;
-}
-.active {
-    background-color: #f19d30;
-  }
-/* dumping all style tags into this*/
+/* --- General / Global Styles --- */
 body {
   background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
   font-family: sans-serif;
@@ -41,9 +7,10 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  text-align: center;
+  text-align: center; /* Centers inline content in the body */
 }
 
+/* --- Navigation Bar Styles --- */
 nav {
   background-color: #333;
   position: fixed;
@@ -61,9 +28,7 @@ nav ul {
   justify-content: flex-end; /* Push items to the right */
 }
 
-nav li {
-  float: none; /* Override default float */
-}
+
 
 nav li a {
   display: block;
@@ -77,24 +42,34 @@ nav li a:hover:not(.active) {
   background-color: #555555;
 }
 
-nav li a.active {
+nav li a.active { /* Specific selector for active link within nav */
   background-color: #f19d30;
 }
 
+/* --- Homepage Header / Hero Section Styles --- */
 header {
-  margin-top: 5%;
+  margin-top: 5%; /* Space from nav */
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers children horizontally */
+  justify-content: center; /* Centers children vertically if height is defined */
+  width: 100%; /* Ensures header takes full width of its parent (main) */
 }
 
 .logo-container {
   margin-bottom: 20px;
+  display: flex; /* Make logo container a flex container */
+  justify-content: center; /* Center the image inside it */
+  width: 100%;
 }
 
 .logo {
   border-radius: 50%;
   border: 5px solid #f19d30;
-  width: 150px;
-  height: 150px;
-  object-fit: cover;
+  width: 200px; /* Logo size */
+  height: 200px; /* Ensure equal height for perfect circle */
+  object-fit: cover; /* Crops image to fit the circle */
 }
 
 h1 {
@@ -124,78 +99,87 @@ h1 {
   background-color: #e08e2b;
 }
 
-
-body {
-  background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
-  font-family: sans-serif;
-  margin: 0;
-  padding-top: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-nav {
-  background-color: #333;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-}
-
-nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  display: flex;
-  justify-content: flex-end;
-}
-
-nav li {
-  float: none;
-}
-
-nav li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-nav li a:hover:not(.active) {
-  background-color: #555555;
-}
-
-nav li a.active {
-  background-color: #f19d30;
-}
-
+/* --- Main Content Area Styles (Applied to <main> tag) --- */
+/*
+ NOTE: Your CSS had conflicting max-width values for 'main'.
+ I've set a common max-width. If specific pages need different widths,
+ consider adding unique classes to their <main> tags (e.g., <main class="dashboard-main">)
+ and define specific widths for those classes.
+*/
 main {
   width: 80%;
-  max-width: 700px;
+  max-width: 960px; /* A good general max-width for content */
   padding: 30px;
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-top: 30px;
   margin-bottom: 30px;
-  text-align: left;
+  text-align: left; /* Default text alignment for content inside main */
 }
 
+/* --- Generic Heading Styles (for h2 within main content) --- */
 h2 {
   color: #f19d30;
   margin-bottom: 20px;
   text-align: center;
 }
 
+/* --- Form and Input Styles (Shared across contact, booking, etc.) --- */
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #333;
+  font-weight: bold;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="date"], /* Added for booking form */
+.form-group input[type="time"], /* Added for booking form */
+.form-group input[type="datetime-local"], /* For admin dashboard filtering/booking */
+.form-group select, /* Added for potential dropdowns */
+.form-group textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Ensures padding doesn't increase width */
+  font-size: 1em;
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.submit-button {
+  background-color: #f19d30;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background-color 0.3s ease;
+}
+
+.submit-button:hover {
+  background-color: #e08e2b;
+}
+
+/* --- Specific Section Styles --- */
+
+/* Contact Information */
 .contact-info {
   margin-bottom: 25px;
 }
 
-.contact-info h3 {
+.contact-info h3, .contact-form h3 { /* Reused h3 for contact form as well */
   color: #333;
   margin-top: 0;
   margin-bottom: 10px;
@@ -220,166 +204,7 @@ h2 {
   border-radius: 5px;
 }
 
-.contact-form h3 {
-  color: #333;
-  margin-top: 0;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  color: #333;
-  font-weight: bold;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 1em;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.submit-button {
-  background-color: #f19d30;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.3s ease;
-}
-
-.submit-button:hover {
-  background-color: #e08e2b;
-}
-
-
-body {
-  background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
-  font-family: sans-serif;
-  margin: 0;
-  padding-top: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-nav {
-  background-color: #333;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-}
-
-nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  display: flex;
-  justify-content: flex-end;
-}
-
-nav li {
-  float: none;
-}
-
-nav li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-nav li a:hover:not(.active) {
-  background-color: #555555;
-}
-
-nav li a.active {
-  background-color: #f19d30;
-}
-
-main {
-  width: 80%;
-  max-width: 600px;
-  padding: 30px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 30px;
-  margin-bottom: 30px;
-  text-align: left;
-}
-
-h2 {
-  color: #f19d30;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  color: #333;
-  font-weight: bold;
-}
-
-.form-group input[type="text"],
-.form-group input[type="email"],
-.form-group input[type="datetime-local"],
-.form-group textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 1em;
-}
-
-.form-group textarea {
-  resize: vertical;
-  min-height: 100px;
-}
-
-.submit-button {
-  background-color: #f19d30;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1em;
-  transition: background-color 0.3s ease;
-}
-
-.submit-button:hover {
-  background-color: #e08e2b;
-}
-
-
+/* Table and Dashboard Specific Styles */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -391,7 +216,7 @@ th, td {
   padding: 8px;
   text-align: left;
   font-size: 0.9em;
-  word-break: break-word; /* To prevent long strings from overflowing */
+  word-break: break-word; /* Prevents long strings from overflowing */
 }
 th {
   background-color: #f19d30;
@@ -418,73 +243,7 @@ tr:hover {
   margin-bottom: 25px;
 }
 
-
-body {
-  background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
-  font-family: sans-serif;
-  margin: 0;
-  padding-top: 60px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-nav {
-  background-color: #333;
-  position: fixed;
-  top: 0;
-  width: 100%;
-  z-index: 100;
-}
-
-nav ul {
-  list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  display: flex;
-  justify-content: flex-end;
-}
-
-nav li {
-  float: none;
-}
-
-nav li a {
-  display: block;
-  color: white;
-  text-align: center;
-  padding: 14px 16px;
-  text-decoration: none;
-}
-
-nav li a:hover:not(.active) {
-  background-color: #555555;
-}
-
-nav li a.active {
-  background-color: #f19d30;
-}
-
-main {
-  width: 80%;
-  max-width: 960px;
-  padding: 20px;
-  background-color: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-top: 30px;
-  margin-bottom: 30px;
-  text-align: left;
-}
-
-h2 {
-  color: #f19d30;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
+/* About Us Page Specific Styles */
 .owner {
   border-bottom: 1px solid #eee;
   padding-bottom: 15px;
@@ -504,4 +263,52 @@ h2 {
 .owner p {
   color: #555;
   line-height: 1.6;
+}
+
+/* Dog Adoption Section Styles */
+.adoption-callout {
+  margin-top: 50px; /* Space from content above */
+  padding: 30px;
+  background-color: #fce8d5; /* A lighter orange/cream background */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  max-width: 600px; /* Limit width to keep it neat */
+  margin-left: auto; /* Center the div */
+  margin-right: auto; /* Center the div */
+}
+
+.adoption-callout h3 {
+  color: #f19d30; /* Your brand color */
+  font-size: 1.8em;
+  margin-bottom: 15px;
+}
+
+.adoption-callout p {
+  color: #555;
+  font-size: 1.1em;
+  line-height: 1.6;
+  margin-bottom: 15px;
+}
+
+.adoption-button {
+  background-color: #f19d30; /* Same as your primary button */
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.2em;
+  text-decoration: none;
+  border-radius: 5px;
+  display: inline-block; /* Essential for padding/sizing */
+  margin-top: 10px;
+  transition: background-color 0.3s ease;
+}
+
+.adoption-button:hover {
+  background-color: #e08e2b; /* Slightly darker on hover */
+}
+
+.adoption-callout .small-text {
+  font-size: 0.9em;
+  color: #777;
+  margin-top: 20px;
 }
