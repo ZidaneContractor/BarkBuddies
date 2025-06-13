@@ -206,41 +206,78 @@ h2 {
 
 /* Table and Dashboard Specific Styles */
 table {
-  width: 100%;
+  width: 100%; /* Ensure table takes full width of its container */
   border-collapse: collapse;
   margin-top: 20px;
   margin-bottom: 40px;
+  font-size: 0.95em; /* Slightly increase font size for readability */
+  table-layout: fixed; /* NEW: Distribute columns evenly within the fixed width */
 }
 th, td {
   border: 1px solid #ddd;
-  padding: 8px;
+  padding: 12px 10px; /* INCREASED PADDING: More vertical and horizontal space */
   text-align: left;
-  font-size: 0.9em;
-  word-break: break-word; /* Prevents long strings from overflowing */
+  /* font-size: 0.9em; This was here, adjusted on table selector instead */
+  word-break: break-word; /* Ensures long words/strings break to next line */
+  white-space: normal; /* Ensures text wraps normally within cell */
 }
 th {
   background-color: #f19d30;
   color: white;
-  cursor: pointer; /* Indicate sortable columns (if we add that later) */
+  cursor: pointer;
+  text-transform: capitalize; /* Makes column headers look cleaner */
+
 }
 tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 tr:hover {
   background-color: #f1f1f1;
+}/* NEW: Specific column widths for better layout */
+/* You might need to adjust these percentages based on your data and preference */
+table th:nth-child(1), /* ID */
+table td:nth-child(1) {
+    width: 5%;
 }
-.dashboard-section {
-  margin-top: 40px;
-  padding: 20px;
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  text-align: left;
+table th:nth-child(2), /* Name */
+table td:nth-child(2) {
+    width: 12%;
 }
-.dashboard-section h3 {
-  color: #333;
-  text-align: center;
-  margin-bottom: 25px;
+table th:nth-child(3), /* Email */
+table td:nth-child(3) {
+    width: 18%;
+}
+table th:nth-child(4), /* Num Dogs */
+table td:nth-child(4) {
+    width: 8%;
+}
+table th:nth-child(5), /* Start Datetime */
+table td:nth-child(5) {
+    width: 15%;
+}
+table th:nth-child(6), /* End Datetime */
+table td:nth-child(6) {
+    width: 15%;
+}
+table th:nth-child(7), /* Location */
+table td:nth-child(7) {
+    width: 12%;
+}
+table th:nth-child(8), /* Notes */
+table td:nth-child(8) {
+    width: 10%;
+}
+/* This is for the 'booking_date' column (assuming it's column 9) */
+table th:nth-child(9),
+table td:nth-child(9) {
+    width: 15%;
+}
+/* This is for the 'dogs_data_json' column (assuming it's column 10) */
+table th:nth-child(10),
+table td:nth-child(10) {
+    width: 25%; /* Give more width to the JSON column */
+    max-width: 250px; /* Optional: A max width to prevent it from getting too wide */
+    overflow: auto; /* Adds scrollbar if content overflows */
 }
 
 /* About Us Page Specific Styles */
@@ -310,5 +347,41 @@ tr:hover {
 .adoption-callout .small-text {
   font-size: 0.9em;
   color: #777;
+  margin-top: 20px;
+}
+
+.dog-profile {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #fcfcfc;
+}
+
+.dog-profile label {
+  font-weight: normal; /* Override bold from .form-group label */
+}
+
+.dog-profile .form-group {
+  margin-bottom: 10px; /* Adjust spacing within dog profile */
+}
+
+.remove-dog-button {
+  background-color: #dc3545; /* Red color for remove button */
+  margin-top: 10px;
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.3s ease;
+}
+
+.remove-dog-button:hover {
+  background-color: #c82333;
+}
+
+#addDogButton {
   margin-top: 20px;
 }

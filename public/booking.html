@@ -2,8 +2,8 @@
 <html>
 <head>
     <style>
-        /* You can include basic styling here or link to your main CSS file */
-      
+            /* Add these new styles to your style.css file after confirming they work */
+   
     </style>
     <title>Book a Sitter - Bark Buddies</title>
     <link rel="stylesheet" href="style.css">
@@ -29,38 +29,50 @@
                 <label for="email">Your Email:</label>
                 <input type="email" id="email" name="email" required>
             </div>
-            <div class="form-group">
-                <label for="dog_breed">Dog Breed:</label>
-                <select id="dog_breed" name="dog_breed">
-                    <optgroup label="Small">
-                        <option value="Chihuahua">Chihuahua</option>
-                        <option value="Pomeranian">Pomeranian</option>
-                        <option value="Pug">Pug</option>
-                        <option value="Shih Tzu">Shih Tzu</option>
-                    </optgroup>
-                    <optgroup label="Medium">
-                        <option value="Golden Retriever">Golden Retriever</option>
-                         <option value="German Shepherd">German Shepherd</option>
-                    </optgroup>
-                    <optgroup label="Large">
-                        <option value="Doberman">Doberman</option>
-                        <option value="Great Dane">Great Dane</option>
-                        <option value="Saint Bernard">Saint Bernard</option>
-                    </optgroup>
-                </select>
-            </div>            
-            <div class="form-group">
-                <label for="dog_gender">Dog Gender:</label>
-                <select id="dog_gender" name="dog_gender">
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="unknown">Unknown</option>
-                </select>
+       
+            <!-- Dog Profile Template - Hidden initially, cloned by JS -->
+            <div id="dogProfileTemplate" class="dog-profile" style="display: none;">
+                <label class="dog-number-label">Dog 1 Details:</label>
+                <div class="form-group">
+                    <label for="dog_breed_template">Dog Breed:</label>
+                    <select id="dog_breed_template" name="dog_breed_template">
+                        <optgroup label="Small">
+                            <option value="Chihuahua">Chihuahua</option>
+                            <option value="Pomeranian">Pomeranian</option>
+                            <option value="Pug">Pug</option>
+                            <option value="Shih Tzu">Shih Tzu</option>
+                        </optgroup>
+                        <optgroup label="Medium">
+                            <option value="Golden Retriever">Golden Retriever</option>
+                            <option value="German Shepherd">German Shepherd</option>
+                      
+                        </optgroup>
+                        <optgroup label="Large">
+                            <option value="Doberman">Doberman</option>
+                            <option value="Great Dane">Great Dane</option>
+                            <option value="Saint Bernard">Saint Bernard</option>
+                       
+                        </optgroup>
+                      
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="dog_gender_template">Dog Gender:</label>
+                    <select id="dog_gender_template" name="dog_gender_template">
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Unknown">Unknown</option>
+                    </select>
+                </div>
+                <button type="button" class="remove-dog-button">Remove Dog</button>
             </div>
-            <div class="form-group">
-                <label for="num_dogs">Number of Dogs:</label>
-                <input type="number" id="num_dogs" name="num_dogs">
-            </div>
+            <!-- End Dog Profile Template -->
+
+            <!-- Container where cloned dog profiles will be added -->
+            <div id="dogProfilesContainer"></div>
+
+            <button type="button" id="addDogButton" class="submit-button">Add Another Dog</button>
+            
             <div class="form-group">
                 <label for="start_datetime">Start Date and Time:</label>
                 <input type="datetime-local" id="start_datetime" name="start_datetime" required>
@@ -80,5 +92,74 @@
             <button type="submit" class="submit-button">Submit Booking Request</button>
         </form>
     </main>
+    <script>
+        let dogCount = 0; // Tracks the number of dog profiles added
+        const dogProfileTemplate = document.getElementById('dogProfileTemplate');
+        const dogProfilesContainer = document.getElementById('dogProfilesContainer');
+        const addDogButton = document.getElementById('addDogButton');
+
+        // Function to add a new dog profile
+        function addDogProfile() {
+            const newDogProfile = dogProfileTemplate.cloneNode(true); // Clone the template
+            newDogProfile.style.display = 'block'; // Make it visible
+            newDogProfile.removeAttribute('id'); // Remove template ID to avoid duplicates
+
+            // Update IDs and names for unique identification
+            const breedSelect = newDogProfile.querySelector('select[name="dog_breed_template"]');
+            const genderSelect = newDogProfile.querySelector('select[name="dog_gender_template"]');
+            const dogNumberLabel = newDogProfile.querySelector('.dog-number-label');
+            const removeButton = newDogProfile.querySelector('.remove-dog-button');
+
+            // Assign unique IDs and names based on dogCount
+            breedSelect.id = `dog_breed_${dogCount}`;
+            breedSelect.name = `dog_breed_${dogCount}`;
+            genderSelect.id = `dog_gender_${dogCount}`;
+            genderSelect.name = `dog_gender_${dogCount}`;
+            dogNumberLabel.textContent = `Dog ${dogCount + 1} Details:`;
+
+            // Add event listener for remove button
+            removeButton.addEventListener('click', () => {
+                newDogProfile.remove(); // Remove the entire dog profile div
+                // Re-label remaining dogs after one is removed (optional, but good for UX)
+                updateDogLabels();
+            });
+
+            dogProfilesContainer.appendChild(newDogProfile);
+            dogCount++; // Increment count for next dog
+        }
+
+        // Function to update dog numbering labels after removal
+        function updateDogLabels() {
+            const dogProfiles = dogProfilesContainer.querySelectorAll('.dog-profile');
+            dogCount = 0; // Reset count
+            dogProfiles.forEach((profile, index) => {
+                const dogNumberLabel = profile.querySelector('.dog-number-label');
+                const breedSelect = profile.querySelector('select[name^="dog_breed_"]');
+                const genderSelect = profile.querySelector('select[name^="dog_gender_"]');
+
+                dogNumberLabel.textContent = `Dog ${index + 1} Details:`;
+                
+                // Update names/ids in case they were dog_breed_template
+                // or to ensure sequential numbering after removals
+                breedSelect.id = `dog_breed_${index}`;
+                breedSelect.name = `dog_breed_${index}`;
+                genderSelect.id = `dog_gender_${index}`;
+                genderSelect.name = `dog_gender_${index}`;
+
+                dogCount++; // Update global count
+            });
+            if (dogCount === 0) { // If all dogs are removed, add the first one back
+                addDogProfile();
+            }
+        }
+
+        // Add event listener to the "Add Another Dog" button
+        addDogButton.addEventListener('click', addDogProfile);
+
+        // Add the first dog profile when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            addDogProfile();
+        });
+    </script>
 </body>
 </html>
