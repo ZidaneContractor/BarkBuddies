@@ -3,7 +3,6 @@ const path = require('path');
 
 // Define the path to your database file
 const dbPath = path.resolve(__dirname, 'bark_buddies.db');
-
 // Create a new database connection
 // If the file doesn't exist, it will be created.
 const db = new sqlite3.Database(dbPath, (err) => {
@@ -17,14 +16,16 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT NOT NULL,
                 email TEXT NOT NULL,
-                dog_breed TEXT,
+               -- dog_breed TEXT,          -- Existing, but will be less used for multi-dog
                 num_dogs INTEGER,
                 start_datetime TEXT,
                 end_datetime TEXT,
                 location TEXT,
                 notes TEXT,
-                dog_gender TEXT,
-                booking_date TEXT DEFAULT CURRENT_TIMESTAMP
+               -- dog_gender TEXT,         -- Existing, but will be less used for multi-dog
+                booking_date TEXT DEFAULT CURRENT_TIMESTAMP,
+                -- NEW COLUMN: To store an array of dog objects as a JSON string
+                dogs_data_json TEXT
             )
         `, (createErr) => {
             if (createErr) {

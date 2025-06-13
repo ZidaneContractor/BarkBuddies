@@ -6,16 +6,18 @@
     <link rel="icon" href="logologo.jpeg" type="image/jpeg">
     <style>
         /* Add some basic styles for the tables within the admin dashboard */
-
+        /* This style block can be removed if these styles are integrated into style.css */
     </style>
 </head>
 <body>
     <nav>
-        <ul>       
-            <li><a href="/">Home</a></li>   
+        <ul>
+            <li><a href="/">Home</a></li>
             <li><a href="aboutus.html">About Us</a></li>
             <li><a href="contactus.html">Contact Us</a></li>
-            <li><a class="active" href="admin_dashboard.html">Admin Dashboard</a></li> </ul>
+            <li><a class="active" href="admin-dashboard">Admin Dashboard</a></li> <!-- Corrected href -->
+      
+        </ul>
     </nav>
 
     <main>
@@ -38,8 +40,8 @@
     </main>
 
     <script>
-         // Function to fetch data and build a table
-         async function fetchDataAndBuildTable(endpoint, containerId) {
+        // Function to fetch data and build a table
+        async function fetchDataAndBuildTable(endpoint, containerId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '<p>Loading data...</p>'; // Show loading message
 
@@ -62,6 +64,7 @@
 
                 // Create table header (using keys from the first object in data)
                 const headerRow = document.createElement('tr');
+                // Use Object.keys(data[0]) to ensure we get all available columns
                 Object.keys(data[0]).forEach(key => {
                     const th = document.createElement('th');
                     th.textContent = formatColumnName(key); // Format for readability
@@ -73,9 +76,40 @@
                 // Populate table body
                 data.forEach(item => {
                     const row = document.createElement('tr');
-                    Object.values(item).forEach(value => {
+                    // Iterate through each key to ensure correct column order and special handling
+                    Object.keys(item).forEach(key => {
                         const td = document.createElement('td');
-                        td.textContent = value;
+                        let displayValue = item[key]; // Default display value
+
+                        // Special handling for the dogs_data_json column
+                        if (key === 'dogs_data_json' && displayValue) {
+                            try {
+                                const dogsData = JSON.parse(displayValue);
+                                if (Array.isArray(dogsData) && dogsData.length > 0) {
+                                    displayValue = dogsData.map((dog, index) => {
+                                        // Return a string for each dog
+                                        return `Dog ${index + 1}: ${dog.breed} (${dog.gender})`;
+                                    }).join('<br>'); // Join with <br> for new lines
+                                    td.innerHTML = displayValue; // Use innerHTML for HTML content
+                                } else {
+                                    displayValue = 'N/A'; // No valid dog data
+                                }
+                            } catch (e) {
+                                console.error("Error parsing dogs_data_json:", e);
+                                displayValue = 'Invalid Data'; // Show error if JSON is malformed
+                            }
+                        } else if (key.includes('datetime') || key.includes('date')) {
+                            // Format date/datetime columns for better readability
+                            try {
+                                displayValue = new Date(displayValue).toLocaleString();
+                            } catch (e) {
+                                // Fallback if date is invalid
+                            }
+                        }
+
+                        if (td.innerHTML === '') { // If not already set by special handling
+                            td.textContent = displayValue; // Set text content for other columns
+                        }
                         row.appendChild(td);
                     });
                     tbody.appendChild(row);
@@ -102,7 +136,6 @@
             fetchDataAndBuildTable('/api/bookings', 'bookingsTableContainer');
             fetchDataAndBuildTable('/api/contact-messages', 'contactMessagesTableContainer');
         });
-    
     </script>
 </body>
 </html>
