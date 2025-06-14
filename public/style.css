@@ -385,3 +385,65 @@ table td:nth-child(10) {
 #addDogButton {
   margin-top: 20px;
 }
+
+    /*
+        ******************************************************************
+        IMPORTANT: These styles are currently inline in this HTML file.
+        For better practice and organization, you should CUT these styles
+        from here and PASTE them into your main 'public/style.css' file.
+        ******************************************************************
+        */
+
+        .dog-profile {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            background-color: #fcfcfc;
+        }
+
+        .dog-profile label {
+            font-weight: normal; /* Override bold from .form-group label */
+        }
+
+        .dog-profile .form-group {
+            margin-bottom: 10px; /* Adjust spacing within dog profile */
+        }
+
+        .remove-dog-button {
+            background-color: #dc3545; /* Red color for remove button */
+            margin-top: 10px;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .remove-dog-button:hover {
+            background-color: #c82333;
+        }
+
+        #addDogButton {
+            margin-top: 20px;
+        }
+
+        /* Styles for Estimated Cost Display */
+        #estimatedCost {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: #f19d30; /* Your brand color */
+            margin-top: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 2px solid #f19d30;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+        }
+        #estimatedCost.error {
+            color: #dc3545;
+            border-color: #dc3545;
+        }

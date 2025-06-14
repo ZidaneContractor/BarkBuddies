@@ -1,26 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-            /* Add these new styles to your style.css file after confirming they work */
-   
-    </style>
     <title>Book a Sitter - Bark Buddies</title>
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="logologo.jpeg" type="image/jpeg">
+    <style>
+    
+    </style>
 </head>
 <body>
     <nav>
         <ul>
-            <li><a href="HomePage.html">Home</a></li>
-            <li><a href="aboutus.html">About Us</a></li>
-            <li><a href="contactus.html">Contact Us</a></li>
+            <li><a href="/">Home</a></li>
+            <li><a href="/aboutus.html">About Us</a></li>
+            <li><a href="/contactus.html">Contact Us</a></li>
+            <li><a class="active" href="/booking.html">Book a Sitter</a></li>
+            <li><a href="/admin-dashboard">Admin Dashboard</a></li>
         </ul>
     </nav>
 
     <main>
         <h2>Book Your Dog Sitter Today!</h2>
-        <form action="/submit_booking" method="POST">
+        <form action="/submit_booking" method="POST" id="bookingForm">
             <div class="form-group">
                 <label for="name">Your Name:</label>
                 <input type="text" id="name" name="name" required>
@@ -29,31 +30,38 @@
                 <label for="email">Your Email:</label>
                 <input type="email" id="email" name="email" required>
             </div>
-       
+
             <!-- Dog Profile Template - Hidden initially, cloned by JS -->
             <div id="dogProfileTemplate" class="dog-profile" style="display: none;">
                 <label class="dog-number-label">Dog 1 Details:</label>
                 <div class="form-group">
                     <label for="dog_breed_template">Dog Breed:</label>
                     <select id="dog_breed_template" name="dog_breed_template">
-                        <optgroup label="Small-Rs.1500 Per Day">
+                        <!-- Simplified labels to just the number for cleaner JS parsing -->
+                        <optgroup label="Small-1500">
                             <option value="Chihuahua">Chihuahua</option>
                             <option value="Pomeranian">Pomeranian</option>
                             <option value="Pug">Pug</option>
                             <option value="Shih Tzu">Shih Tzu</option>
                         </optgroup>
-                        <optgroup label="Medium-Rs.2000 per day">
+                        <optgroup label="Medium-2000">
                             <option value="Golden Retriever">Golden Retriever</option>
                             <option value="German Shepherd">German Shepherd</option>
-                      
+                            <option value="Beagle">Beagle</option>
+                            <option value="Cocker Spaniel">Cocker Spaniel</option>
+                            <option value="Bulldog">Bulldog</option>
+                            <option value="Labrador Retriever">Labrador Retriever</option>
                         </optgroup>
-                        <optgroup label="Large-Rs.2500">
+                        <optgroup label="Large-2500">
                             <option value="Doberman">Doberman</option>
                             <option value="Great Dane">Great Dane</option>
                             <option value="Saint Bernard">Saint Bernard</option>
-                       
+                            <option value="Rottweiler">Rottweiler</option>
                         </optgroup>
-                      
+                         <optgroup label="Mixed/Other-1750">
+                            <option value="Mixed Breed">Mixed Breed</option>
+                            <option value="Other">Other</option>
+                        </optgroup>
                     </select>
                 </div>
                 <div class="form-group">
@@ -89,49 +97,121 @@
                 <label for="notes">Special Instructions/Notes:</label>
                 <textarea id="notes" name="notes" rows="5"></textarea>
             </div>
+
+            <!-- Estimated Cost Display -->
+            <div id="estimatedCost">
+                Estimated Cost: Rs. 0
+            </div>
+
+            <!-- Hidden input to store calculated total cost for submission -->
+            <input type="hidden" id="totalCostInput" name="total_cost" value="0">
+
             <button type="submit" class="submit-button">Submit Booking Request</button>
         </form>
     </main>
+
     <script>
-        let dogCount = 0; // Tracks the number of dog profiles added
+        let dogCount = 0;
         const dogProfileTemplate = document.getElementById('dogProfileTemplate');
         const dogProfilesContainer = document.getElementById('dogProfilesContainer');
         const addDogButton = document.getElementById('addDogButton');
+        const startDatetimeInput = document.getElementById('start_datetime');
+        const endDatetimeInput = document.getElementById('end_datetime');
+        const estimatedCostDisplay = document.getElementById('estimatedCost');
+        const totalCostInput = document.getElementById('totalCostInput');
 
-        // Function to add a new dog profile
+        // Helper function to extract price from optgroup label
+        function getPricePerDay(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const optgroup = selectedOption.closest('optgroup');
+            if (optgroup) {
+                // Extracts numbers from the optgroup label, e.g., "Small-1500" -> 1500
+                const priceMatch = optgroup.label.match(/\d+/);
+                return priceMatch ? parseInt(priceMatch[0], 10) : 0;
+            }
+            return 0;
+        }
+
+        // Function to calculate and update the estimated cost
+        function updateEstimatedCost() {
+            let totalDays = 0;
+            let totalDogCostPerDay = 0;
+
+            const start = new Date(startDatetimeInput.value);
+            const end = new Date(endDatetimeInput.value);
+
+            // Calculate duration in days
+            // Uses Math.ceil to count any part of a day as a full day of service
+            if (start.getTime() && end.getTime() && end.getTime() > start.getTime()) {
+                const diffTime = Math.abs(end.getTime() - start.getTime());
+                totalDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // Convert milliseconds to days
+            } else {
+                estimatedCostDisplay.textContent = 'Please select valid dates.';
+                estimatedCostDisplay.classList.add('error');
+                totalCostInput.value = 0; // Reset hidden input value
+                return;
+            }
+
+            // Calculate total dog cost per day across all added dogs
+            const dogBreedSelects = dogProfilesContainer.querySelectorAll('select[name^="dog_breed_"]');
+            dogBreedSelects.forEach(select => {
+                totalDogCostPerDay += getPricePerDay(select);
+            });
+
+            const totalEstimatedCost = totalDogCostPerDay * totalDays;
+
+            estimatedCostDisplay.textContent = `Estimated Cost: Rs. ${totalEstimatedCost}`;
+            estimatedCostDisplay.classList.remove('error');
+            totalCostInput.value = totalEstimatedCost; // Store the calculated cost for form submission
+        }
+
+        // Function to add a new dog profile section to the form
         function addDogProfile() {
             const newDogProfile = dogProfileTemplate.cloneNode(true); // Clone the template
-            newDogProfile.style.display = 'block'; // Make it visible
-            newDogProfile.removeAttribute('id'); // Remove template ID to avoid duplicates
+            newDogProfile.style.display = 'block'; // Make the cloned element visible
+            newDogProfile.removeAttribute('id'); // Remove the template ID to avoid duplicates
 
-            // Update IDs and names for unique identification
+            // Get references to elements within the new profile
             const breedSelect = newDogProfile.querySelector('select[name="dog_breed_template"]');
             const genderSelect = newDogProfile.querySelector('select[name="dog_gender_template"]');
             const dogNumberLabel = newDogProfile.querySelector('.dog-number-label');
             const removeButton = newDogProfile.querySelector('.remove-dog-button');
 
-            // Assign unique IDs and names based on dogCount
+            // Assign unique IDs and names based on the current dogCount
             breedSelect.id = `dog_breed_${dogCount}`;
             breedSelect.name = `dog_breed_${dogCount}`;
             genderSelect.id = `dog_gender_${dogCount}`;
             genderSelect.name = `dog_gender_${dogCount}`;
             dogNumberLabel.textContent = `Dog ${dogCount + 1} Details:`;
 
-            // Add event listener for remove button
+            // Add event listener to the new dog's breed select for cost calculation updates
+            breedSelect.addEventListener('change', updateEstimatedCost);
+
+            // Add event listener to the new remove button
             removeButton.addEventListener('click', () => {
                 newDogProfile.remove(); // Remove the entire dog profile div
-                // Re-label remaining dogs after one is removed (optional, but good for UX)
-                updateDogLabels();
+                updateDogLabels(); // Re-label remaining dogs and update cost
             });
 
-            dogProfilesContainer.appendChild(newDogProfile);
-            dogCount++; // Increment count for next dog
+            dogProfilesContainer.appendChild(newDogProfile); // Append the new profile to the container
+            dogCount++; // Increment the global dog counter
+
+            // Update the estimated cost after adding a new dog
+            updateEstimatedCost();
         }
 
-        // Function to update dog numbering labels after removal
+        // Function to update dog numbering labels and trigger cost recalculation after a dog is removed
         function updateDogLabels() {
             const dogProfiles = dogProfilesContainer.querySelectorAll('.dog-profile');
-            dogCount = 0; // Reset count
+            dogCount = 0; // Reset the global count before re-labeling
+
+            // If all dogs are removed, add the first one back to ensure the form is never empty
+            if (dogProfiles.length === 0) {
+                addDogProfile(); // This will increment dogCount to 1 and call updateEstimatedCost
+                return; // Exit to prevent further processing in this function
+            }
+
+            // Re-label existing dog profiles sequentially
             dogProfiles.forEach((profile, index) => {
                 const dogNumberLabel = profile.querySelector('.dog-number-label');
                 const breedSelect = profile.querySelector('select[name^="dog_breed_"]');
@@ -139,26 +219,28 @@
 
                 dogNumberLabel.textContent = `Dog ${index + 1} Details:`;
                 
-                // Update names/ids in case they were dog_breed_template
-                // or to ensure sequential numbering after removals
+                // Ensure names/ids are sequential after removals for server processing
                 breedSelect.id = `dog_breed_${index}`;
                 breedSelect.name = `dog_breed_${index}`;
                 genderSelect.id = `dog_gender_${index}`;
                 genderSelect.name = `dog_gender_${index}`;
 
-                dogCount++; // Update global count
+                dogCount++; // Update global count for each re-labeled dog
             });
-            if (dogCount === 0) { // If all dogs are removed, add the first one back
-                addDogProfile();
-            }
+
+            updateEstimatedCost(); // Recalculate cost after labels are updated
         }
 
-        // Add event listener to the "Add Another Dog" button
+        // Add event listeners for date/time input changes (triggers cost update)
+        startDatetimeInput.addEventListener('change', updateEstimatedCost);
+        endDatetimeInput.addEventListener('change', updateEstimatedCost);
+
+        // Add event listener for the "Add Another Dog" button
         addDogButton.addEventListener('click', addDogProfile);
 
-        // Add the first dog profile when the page loads
+        // Add the first dog profile when the page initially loads
         document.addEventListener('DOMContentLoaded', () => {
-            addDogProfile();
+            addDogProfile(); // This call also performs the initial cost calculation
         });
     </script>
 </body>
