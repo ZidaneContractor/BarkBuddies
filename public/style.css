@@ -204,80 +204,118 @@ h2 {
   border-radius: 5px;
 }
 
-/* Table and Dashboard Specific Styles */
 table {
-  width: 100%; /* Ensure table takes full width of its container */
-  border-collapse: collapse;
-  margin-top: 20px;
-  margin-bottom: 40px;
-  font-size: 0.95em; /* Slightly increase font size for readability */
-  table-layout: fixed; /* NEW: Distribute columns evenly within the fixed width */
+    width: 100%; /* Ensure table takes full width of its container */
+    border-collapse: collapse;
+    margin-top: 20px;
+    margin-bottom: 40px;
+    font-size: 0.95em; /* Slightly increase font size for readability */
+    table-layout: fixed; /* IMPORTANT: Distribute columns based on explicit widths */
 }
-th, td {
-  border: 1px solid #ddd;
-  padding: 12px 10px; /* INCREASED PADDING: More vertical and horizontal space */
-  text-align: left;
-  /* font-size: 0.9em; This was here, adjusted on table selector instead */
-  word-break: break-word; /* Ensures long words/strings break to next line */
-  white-space: normal; /* Ensures text wraps normally within cell */
-}
-th {
-  background-color: #f19d30;
-  color: white;
-  cursor: pointer;
-  text-transform: capitalize; /* Makes column headers look cleaner */
 
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px 10px; /* Increased padding for better spacing */
+    text-align: left;
+    word-break: break-word; /* Ensures long words/strings break to next line */
+    white-space: normal; /* Ensures text wraps normally within cell */
+    vertical-align: top; /* Align content to the top of the cell */
 }
+
+th {
+    background-color: #f19d30;
+    color: white;
+    cursor: pointer;
+    text-transform: capitalize; /* Makes column headers look cleaner */
+}
+
 tr:nth-child(even) {
-  background-color: #f9f9f9;
+    background-color: #f9f9f9;
 }
+
 tr:hover {
-  background-color: #f1f1f1;
-}/* NEW: Specific column widths for better layout */
-/* You might need to adjust these percentages based on your data and preference */
+    background-color: #f1f1f1;
+}
+
+/*
+    NEW: Explicit Column Widths
+    These percentages must add up to 100% (or slightly more if you want to allow for a scrollbar,
+    but typically aim for 100% and let `overflow-x: auto` handle the rest if content is too wide).
+
+    Based on the likely order of columns from your database schema:
+    1. id
+    2. name
+    3. email
+    4. num_dogs
+    5. start_datetime
+    6. end_datetime
+    7. location
+    8. notes
+    9. booking_date
+    10. dogs_data_json
+    11. total_cost
+*/
 table th:nth-child(1), /* ID */
 table td:nth-child(1) {
-    width: 5%;
+    width: 4%;
 }
 table th:nth-child(2), /* Name */
 table td:nth-child(2) {
-    width: 12%;
+    width: 8%;
 }
 table th:nth-child(3), /* Email */
 table td:nth-child(3) {
-    width: 18%;
+    width: 15%;
 }
 table th:nth-child(4), /* Num Dogs */
 table td:nth-child(4) {
-    width: 8%;
+    width: 6%;
 }
 table th:nth-child(5), /* Start Datetime */
 table td:nth-child(5) {
-    width: 15%;
+    width: 12%;
 }
 table th:nth-child(6), /* End Datetime */
 table td:nth-child(6) {
-    width: 15%;
+    width: 12%;
 }
 table th:nth-child(7), /* Location */
 table td:nth-child(7) {
-    width: 12%;
+    width: 10%;
 }
 table th:nth-child(8), /* Notes */
 table td:nth-child(8) {
+    width: 10%; /* Can be adjusted based on typical note length */
+}
+table th:nth-child(9), /* Booking Date */
+table td:nth-child(9) {
     width: 10%;
 }
-/* This is for the 'booking_date' column (assuming it's column 9) */
-table th:nth-child(9),
-table td:nth-child(9) {
-    width: 15%;
-}
-/* This is for the 'dogs_data_json' column (assuming it's column 10) */
-table th:nth-child(10),
+table th:nth-child(10), /* Dogs Data Json */
 table td:nth-child(10) {
-    width: 25%; /* Give more width to the JSON column */
-    max-width: 250px; /* Optional: A max width to prevent it from getting too wide */
-    overflow: auto; /* Adds scrollbar if content overflows */
+    width: 15%; /* Give enough width for multi-line dog details */
+}
+table th:nth-child(11), /* Total Cost (NEW) */
+table td:nth-child(11) {
+    width: 8%; /* A bit more space for currency */
+}
+
+
+.dashboard-section {
+    margin-top: 40px;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    text-align: left;
+    max-width: 100%;
+    /* Crucial for making the table horizontally scrollable if needed */
+    overflow-x: auto;
+}
+.dashboard-section h3 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 25px;
 }
 
 /* About Us Page Specific Styles */

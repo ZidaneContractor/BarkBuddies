@@ -5,18 +5,22 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="logologo.jpeg" type="image/jpeg">
     <style>
-        /* Add some basic styles for the tables within the admin dashboard */
-        /* This style block can be removed if these styles are integrated into style.css */
+        /*
+        ******************************************************************
+        IMPORTANT: This style block should be EMPTY if all your CSS
+        is in 'style.css'. If you have any table styles here, CUT them
+        and PASTE them into your main 'public/style.css' file.
+        ******************************************************************
+        */
     </style>
 </head>
 <body>
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="aboutus.html">About Us</a></li>
-            <li><a href="contactus.html">Contact Us</a></li>
-            <li><a class="active" href="admin-dashboard">Admin Dashboard</a></li> <!-- Corrected href -->
-      
+            <li><a href="/aboutus.html">About Us</a></li>
+            <li><a href="/contactus.html">Contact Us</a></li>
+            <li><a class="active" href="/admin-dashboard">Admin Dashboard</a></li>                                                  
         </ul>
     </nav>
 
@@ -64,7 +68,6 @@
 
                 // Create table header (using keys from the first object in data)
                 const headerRow = document.createElement('tr');
-                // Use Object.keys(data[0]) to ensure we get all available columns
                 Object.keys(data[0]).forEach(key => {
                     const th = document.createElement('th');
                     th.textContent = formatColumnName(key); // Format for readability
@@ -76,8 +79,7 @@
                 // Populate table body
                 data.forEach(item => {
                     const row = document.createElement('tr');
-                    // Iterate through each key to ensure correct column order and special handling
-                    Object.keys(item).forEach(key => {
+                    Object.keys(item).forEach(key => { // Iterate through keys to get column name
                         const td = document.createElement('td');
                         let displayValue = item[key]; // Default display value
 
@@ -87,7 +89,6 @@
                                 const dogsData = JSON.parse(displayValue);
                                 if (Array.isArray(dogsData) && dogsData.length > 0) {
                                     displayValue = dogsData.map((dog, index) => {
-                                        // Return a string for each dog
                                         return `Dog ${index + 1}: ${dog.breed} (${dog.gender})`;
                                     }).join('<br>'); // Join with <br> for new lines
                                     td.innerHTML = displayValue; // Use innerHTML for HTML content
@@ -98,7 +99,16 @@
                                 console.error("Error parsing dogs_data_json:", e);
                                 displayValue = 'Invalid Data'; // Show error if JSON is malformed
                             }
-                        } else if (key.includes('datetime') || key.includes('date')) {
+                        } else if (key === 'total_cost') { // Special handling for total_cost
+                            // Ensure displayValue is a number before formatting
+                            const cost = parseFloat(displayValue);
+                            if (!isNaN(cost)) {
+                                displayValue = `Rs. ${cost.toLocaleString('en-IN')}`; // Format as currency
+                            } else {
+                                displayValue = 'N/A'; // Or handle as appropriate if not a number
+                            }
+                        }
+                        else if (key.includes('datetime') || key.includes('date')) {
                             // Format date/datetime columns for better readability
                             try {
                                 displayValue = new Date(displayValue).toLocaleString();

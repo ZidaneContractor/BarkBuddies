@@ -23,11 +23,11 @@ app.get('/booking', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'booking.html'));
 });
 // Route for the about us page
-app.get('/aboutus.html', (req, res) => { // Ensure this route is correct if it was just /about
+app.get('/aboutus.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'aboutus.html'));
 });
 // Route for the contact us page
-app.get('/contactus.html', (req, res) => { // Ensure this route is correct if it was just /contact
+app.get('/contactus.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'contactus.html'));
 });
 
@@ -36,9 +36,9 @@ app.get('/admin-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin_dashboard.html'));
 });
 
-// --- API endpoint to get all bookings ---
+// --- API endpoint to get all bookings (UPDATED) ---
 app.get('/api/bookings', (req, res) => {
-    // Select all columns, including the new dogs_data_json
+    // Select all columns, including the new dogs_data_json and total_cost
     const sql = `SELECT * FROM bookings ORDER BY booking_date DESC`;
     db.all(sql, [], (err, rows) => {
         if (err) {
@@ -57,20 +57,19 @@ app.get('/api/contact-messages', (req, res) => {
             console.error('Error fetching contact messages:', err.message);
             return res.status(500).json({ error: err.message });
         }
-        res.json(rows); // Send the fetched rows as JSON
+        res.json(rows);
     });
 });
 
 
 // --- Route to handle booking submissions (MODIFIED) ---
 app.post('/submit_booking', (req, res) => {
-    const { name, email, start_datetime, end_datetime, location, notes } = req.body;
+    // Destructure all expected fields, including the new total_cost
+    const { name, email, start_datetime, end_datetime, location, notes, total_cost } = req.body;
 
     // --- Process Multiple Dog Data from form fields ---
     const dogs = [];
     let i = 0;
-    // Loop through the submitted form data to find dog_breed_X and dog_gender_X
-    // The loop continues as long as a 'dog_breed_i' field exists
     while (req.body[`dog_breed_${i}`] !== undefined && req.body[`dog_gender_${i}`] !== undefined) {
         dogs.push({
             breed: req.body[`dog_breed_${i}`],
@@ -79,15 +78,15 @@ app.post('/submit_booking', (req, res) => {
         i++;
     }
 
-    const num_dogs = dogs.length; // The total number of dogs submitted
-    const dogs_data_json = JSON.stringify(dogs); // Convert the array of dog objects to a JSON string
+    const num_dogs = dogs.length;
+    const dogs_data_json = JSON.stringify(dogs);
 
     // Insert data into the database
-    // Ensure the order of columns matches the order of placeholders
+    // Ensure the order of columns in the SQL matches the order of parameters
     db.run(
-        `INSERT INTO bookings (name, email, num_dogs, start_datetime, end_datetime, location, notes, dogs_data_json)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-        [name, email, num_dogs, start_datetime, end_datetime, location, notes, dogs_data_json],
+        `INSERT INTO bookings (name, email, num_dogs, start_datetime, end_datetime, location, notes, dogs_data_json, total_cost)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [name, email, num_dogs, start_datetime, end_datetime, location, notes, dogs_data_json, total_cost],
         function (err) {
             if (err) {
                 console.error('Error inserting booking:', err.message);
@@ -96,7 +95,7 @@ app.post('/submit_booking', (req, res) => {
             }
             console.log(`A booking has been inserted with rowid ${this.lastID}`);
 
-            // --- NEW/MODIFIED: Send a detailed HTML confirmation response ---
+            // --- Detailed HTML confirmation response ---
             let dogsHtml = '';
             if (dogs.length > 0) {
                 dogsHtml += '<p><strong>Dog(s) Details:</strong></p><ul>';
@@ -113,7 +112,7 @@ app.post('/submit_booking', (req, res) => {
                 <html>
                 <head>
                     <title>Booking Confirmed</title>
-                    <link rel="stylesheet" href="style.css"> <!-- Link to your main CSS for consistency -->
+                    <link rel="stylesheet" href="style.css">
                     <link rel="icon" href="logologo.jpeg" type="image/jpeg">
                     <style>
                         /* Minimal inline styles to ensure the confirmation looks good independently */
@@ -135,7 +134,7 @@ app.post('/submit_booking', (req, res) => {
                             border-radius: 8px;
                             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
                             margin-top: 50px;
-                            text-align: left; /* Align text inside container to left */
+                            text-align: left;
                         }
                         .confirmation-container h2 {
                             color: #f19d30;
@@ -162,7 +161,7 @@ app.post('/submit_booking', (req, res) => {
                         .back-button {
                             display: inline-block;
                             padding: 10px 20px;
-                            background-color: #f19d30; /* Use your primary button color */
+                            background-color: #f19d30;
                             color: white;
                             text-decoration: none;
                             border-radius: 5px;
@@ -183,6 +182,7 @@ app.post('/submit_booking', (req, res) => {
                         ${notes ? `<p>Special Instructions: <strong>${notes}</strong></p>` : ''}
                         <p>Total number of dogs: <strong>${num_dogs}</strong></p>
                         ${dogsHtml}
+                        <p><strong>Estimated Total Cost: Rs. ${total_cost}</strong></p> <!-- NEW: Display total cost -->
                         <a href="/" class="back-button">Back to Homepage</a>
                     </main>
                 </body>
@@ -192,7 +192,7 @@ app.post('/submit_booking', (req, res) => {
     );
 });
 
-// --- Route to handle contact form submissions (MODIFIED) ---
+// --- Route to handle contact form submissions ---
 app.post('/submit_contact', (req, res) => {
     const { name, email, subject, message } = req.body;
 
@@ -206,17 +206,14 @@ app.post('/submit_contact', (req, res) => {
                 return;
             }
             console.log(`A contact message has been inserted with rowid ${this.lastID}`);
-
-            // --- NEW: Detailed HTML confirmation for contact form ---
             res.send(`
                 <!DOCTYPE html>
                 <html>
                 <head>
                     <title>Contact Message Sent</title>
-                    <link rel="stylesheet" href="style.css"> <!-- Link to your main CSS for consistency -->
+                    <link rel="stylesheet" href="style.css">
                     <link rel="icon" href="logologo.jpeg" type="image/jpeg">
                     <style>
-                        /* Reuse confirmation container styles from booking for consistency */
                         body {
                             background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
                             font-family: sans-serif;
