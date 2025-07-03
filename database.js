@@ -24,7 +24,8 @@ const db = new sqlite3.Database(dbPath, (err) => {
                 notes TEXT,
                 booking_date TEXT DEFAULT CURRENT_TIMESTAMP,
                 dogs_data_json TEXT,      -- Holds all dog details as JSON
-                total_cost REAL           -- NEW COLUMN: To store the calculated total cost
+                total_cost REAL,          -- Stores the calculated total cost
+                photos_json TEXT          -- NEW COLUMN: Stores JSON array of photo paths
             )
         `, (createErr) => {
             if (createErr) {

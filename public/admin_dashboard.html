@@ -20,7 +20,7 @@
             <li><a href="/">Home</a></li>
             <li><a href="/aboutus.html">About Us</a></li>
             <li><a href="/contactus.html">Contact Us</a></li>
-            <li><a class="active" href="/admin-dashboard">Admin Dashboard</a></li>                                                  
+       
         </ul>
     </nav>
 
@@ -100,16 +100,48 @@
                                 displayValue = 'Invalid Data'; // Show error if JSON is malformed
                             }
                         } else if (key === 'total_cost') { // Special handling for total_cost
-                            // Ensure displayValue is a number before formatting
                             const cost = parseFloat(displayValue);
                             if (!isNaN(cost)) {
                                 displayValue = `Rs. ${cost.toLocaleString('en-IN')}`; // Format as currency
                             } else {
-                                displayValue = 'N/A'; // Or handle as appropriate if not a number
+                                displayValue = 'N/A';
+                            }
+                        } else if (key === 'photos_json' && displayValue) { // NEW: Special handling for photos_json
+                            try {
+                                const photoPaths = JSON.parse(displayValue);
+                                if (Array.isArray(photoPaths) && photoPaths.length > 0) {
+                                    // Create a container for images to allow flexbox styling
+                                    const imgContainer = document.createElement('div');
+                                    imgContainer.style.display = 'flex';
+                                    imgContainer.style.flexWrap = 'wrap';
+                                    imgContainer.style.gap = '5px'; // Small gap between images
+                                    imgContainer.style.justifyContent = 'center'; // Center images
+
+                                    photoPaths.forEach(path => {
+                                        const img = document.createElement('img');
+                                        img.src = path; // Path from the database
+                                        img.alt = 'Dog Photo';
+                                        img.style.width = '50px';   // Smaller size for dashboard
+                                        img.style.height = '50px';
+                                        img.style.objectFit = 'cover';
+                                        img.style.borderRadius = '4px'; // Slightly rounded corners
+                                        img.onerror = () => {
+                                            // Fallback if image fails to load
+                                            img.src = 'https://placehold.co/50x50/cccccc/000000?text=No+Img';
+                                            img.alt = 'Image not found';
+                                        };
+                                        imgContainer.appendChild(img);
+                                    });
+                                    td.appendChild(imgContainer); // Append the container to the table cell
+                                } else {
+                                    td.textContent = 'No Photos'; // Display text if no photos
+                                }
+                            } catch (e) {
+                                console.error("Error parsing photos_json:", e);
+                                td.textContent = 'Invalid Photo Data'; // Show error if JSON is malformed
                             }
                         }
                         else if (key.includes('datetime') || key.includes('date')) {
-                            // Format date/datetime columns for better readability
                             try {
                                 displayValue = new Date(displayValue).toLocaleString();
                             } catch (e) {
@@ -117,7 +149,7 @@
                             }
                         }
 
-                        if (td.innerHTML === '') { // If not already set by special handling
+                        if (td.innerHTML === '') { // If not already set by special handling (e.g., photos)
                             td.textContent = displayValue; // Set text content for other columns
                         }
                         row.appendChild(td);

@@ -2,50 +2,83 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
 const db = require('./database'); // Assuming database.js is in the same directory
+const multer = require('multer'); // NEW: Import multer
+const fs = require('fs'); // NEW: Import file system module for creating directories
 
 const app = express();
 const port = 3000;
 
-// Middleware to parse URL-encoded form data (for traditional HTML forms)
-app.use(bodyParser.urlencoded({ extended: true }));
+// --- Multer Configuration for File Uploads (NEW) ---
+const UPLOADS_DIR = path.join(__dirname, 'public', 'uploads'); // Directory to store uploaded images
 
-// Serve static files (HTML, CSS, images) from the 'public' directory
+// Create the uploads directory if it doesn't exist
+if (!fs.existsSync(UPLOADS_DIR)) {
+    fs.mkdirSync(UPLOADS_DIR, { recursive: true });
+    console.log(`Created uploads directory at: ${UPLOADS_DIR}`);
+}
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, UPLOADS_DIR); // Files will be saved in the 'public/uploads' directory
+    },
+    filename: function (req, file, cb) {
+        // Create a unique filename: fieldname-timestamp.ext
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname));
+    }
+});
+
+// Configure multer to accept multiple files for the 'dog_photos' field
+// Max 5 files, each up to 5MB
+const upload = multer({
+    storage: storage,
+    limits: { fileSize: 5 * 1024 * 1024 }, // 5 MB limit per file
+    fileFilter: (req, file, cb) => {
+        // Accept only image files
+        if (file.mimetype.startsWith('image/')) {
+            cb(null, true);
+        } else {
+            cb(new Error('Only image files are allowed!'), false);
+        }
+    }
+});
+
+// Middleware
+// bodyParser.urlencoded is still needed for other forms (like contact form)
+app.use(bodyParser.urlencoded({ extended: true }));
+// Serve static files (HTML, CSS, images, and now uploaded images) from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- Routes for serving your HTML pages ---
-// Route for the home page (handles 'http://localhost:3000/' directly)
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'HomePage.html'));
 });
 
-// Route for the booking page
 app.get('/booking', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'booking.html'));
 });
-// Route for the about us page
+
 app.get('/aboutus.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'aboutus.html'));
 });
-// Route for the contact us page
+
 app.get('/contactus.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'contactus.html'));
 });
 
-// Route for the admin dashboard page
 app.get('/admin-dashboard', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'admin_dashboard.html'));
 });
 
-// --- API endpoint to get all bookings (UPDATED) ---
+// --- API endpoint to get all bookings ---
 app.get('/api/bookings', (req, res) => {
-    // Select all columns, including the new dogs_data_json and total_cost
     const sql = `SELECT * FROM bookings ORDER BY booking_date DESC`;
     db.all(sql, [], (err, rows) => {
         if (err) {
             console.error('Error fetching bookings:', err.message);
             return res.status(500).json({ error: err.message });
         }
-        res.json(rows); // Send the fetched rows as JSON
+        res.json(rows);
     });
 });
 
@@ -62,10 +95,16 @@ app.get('/api/contact-messages', (req, res) => {
 });
 
 
-// --- Route to handle booking submissions (MODIFIED) ---
-app.post('/submit_booking', (req, res) => {
-    // Destructure all expected fields, including the new total_cost
+// --- Route to handle booking submissions (MODIFIED for Multer) ---
+// Use upload.array('dog_photos', 5) middleware to handle file uploads
+app.post('/submit_booking', upload.array('dog_photos', 5), (req, res) => {
+    // req.body will now contain text fields, and req.files will contain file info
     const { name, email, start_datetime, end_datetime, location, notes, total_cost } = req.body;
+    const uploadedFiles = req.files; // Array of uploaded file objects
+
+    // Extract paths of uploaded files
+    const photoPaths = uploadedFiles ? uploadedFiles.map(file => `/uploads/${file.filename}`) : [];
+    const photos_json = JSON.stringify(photoPaths); // Store as JSON string in DB
 
     // --- Process Multiple Dog Data from form fields ---
     const dogs = [];
@@ -82,14 +121,21 @@ app.post('/submit_booking', (req, res) => {
     const dogs_data_json = JSON.stringify(dogs);
 
     // Insert data into the database
-    // Ensure the order of columns in the SQL matches the order of parameters
     db.run(
-        `INSERT INTO bookings (name, email, num_dogs, start_datetime, end_datetime, location, notes, dogs_data_json, total_cost)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [name, email, num_dogs, start_datetime, end_datetime, location, notes, dogs_data_json, total_cost],
+        `INSERT INTO bookings (name, email, num_dogs, start_datetime, end_datetime, location, notes, dogs_data_json, total_cost, photos_json)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, // Added one more '?' for photos_json
+        [name, email, num_dogs, start_datetime, end_datetime, location, notes, dogs_data_json, total_cost, photos_json], // Added photos_json here
         function (err) {
             if (err) {
                 console.error('Error inserting booking:', err.message);
+                // If there's a DB error, try to clean up uploaded files
+                if (uploadedFiles) {
+                    uploadedFiles.forEach(file => {
+                        fs.unlink(file.path, (unlinkErr) => {
+                            if (unlinkErr) console.error('Error deleting uploaded file:', unlinkErr);
+                        });
+                    });
+                }
                 res.status(500).send('Error submitting booking request. Please try again.');
                 return;
             }
@@ -107,6 +153,17 @@ app.post('/submit_booking', (req, res) => {
                 dogsHtml += '<p>No specific dog details provided.</p>';
             }
 
+            let photosConfirmationHtml = '';
+            if (photoPaths.length > 0) {
+                photosConfirmationHtml += '<p><strong>Uploaded Photos:</strong></p><div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">';
+                photoPaths.forEach(path => {
+                    photosConfirmationHtml += `<img src="${path}" alt="Dog Photo" style="width: 80px; height: 80px; object-fit: cover; border-radius: 5px;">`;
+                });
+                photosConfirmationHtml += '</div>';
+            } else {
+                photosConfirmationHtml += '<p>No photos uploaded.</p>';
+            }
+
             res.send(`
                 <!DOCTYPE html>
                 <html>
@@ -115,7 +172,7 @@ app.post('/submit_booking', (req, res) => {
                     <link rel="stylesheet" href="style.css">
                     <link rel="icon" href="logologo.jpeg" type="image/jpeg">
                     <style>
-                        /* Minimal inline styles to ensure the confirmation looks good independently */
+                        /* Inline styles for confirmation page (can be moved to style.css) */
                         body {
                             background-image: linear-gradient(to right, #fffdd0 , rgb(255, 213, 128));
                             font-family: sans-serif;
@@ -182,7 +239,8 @@ app.post('/submit_booking', (req, res) => {
                         ${notes ? `<p>Special Instructions: <strong>${notes}</strong></p>` : ''}
                         <p>Total number of dogs: <strong>${num_dogs}</strong></p>
                         ${dogsHtml}
-                        <p><strong>Estimated Total Cost: Rs. ${total_cost}</strong></p> <!-- NEW: Display total cost -->
+                        <p><strong>Estimated Total Cost: Rs. ${total_cost}</strong></p>
+                        ${photosConfirmationHtml} <!-- NEW: Display uploaded photos -->
                         <a href="/" class="back-button">Back to Homepage</a>
                     </main>
                 </body>
